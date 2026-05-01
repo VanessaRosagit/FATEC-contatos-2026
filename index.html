@@ -4,57 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./app.js" defer type="module"></script>
+    <script src="./contatos.js" defer type="module"></script>
+    <link rel="stylesheet" href="style.css">
     <title>contatos</title>
 
 </head>
-<body>
+
+    <body>
+    <header>
+        <h1>Agenda de Contatos</h1>
+        <p>Fatec São Roque - Disciplina de PSI</p>
+    </header>
+
     <main class="container">
-        <h1 class="title">Cadastro</h1>
-        <div class="row">
-            <div class="inputbox">
-                <input type="text" id="nome" required>
-                <label for="nome">Nome</label>
+        <!-- Formulário de Cadastro e Edição -->
+        <section class="card-form">
+            <h2 id="form-title">Cadastrar Novo Contato</h2>
+            <form id="contato-form">
+                <!-- Campo oculto para sabermos se estamos editando um ID existente -->
+                <input type="hidden" id="contato-id">
+
+                <div class="form-group">
+                    <input type="text" id="nome" placeholder="Nome Completo" required>
+                    <input type="email" id="email" placeholder="E-mail" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="celular" placeholder="Celular (00) 00000-0000" required>
+                    <input type="url" id="foto" placeholder="URL da Foto (ex: https://...)">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="endereco" placeholder="Endereço">
+                    <input type="text" id="cidade" placeholder="Cidade">
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" id="btn-salvar">Salvar Contato</button>
+                    <button type="button" id="btn-limpar" class="secondary">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Área de Listagem -->
+        <section class="listagem">
+            <h2>Lista de Contatos</h2>
+            <div id="contatos-container" class="grid-contatos">
+                <!-- Os cards aparecerão aqui via JavaScript -->
+                <p class="feedback-msg">Carregando contatos...</p>
             </div>
-            <div class="inputbox">
-                <input type="text" id="email"  required>
-                <label for="email">Email</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="inputbox">
-                <input type="text" id="cep"  required>
-                <label for="cep">CEP</label>
-            </div>
-            <div class="inputbox">
-                <input type="text" id="endereco"  required>
-                <label for="endereco">Endereço</label>
-            </div>
-            <div class="inputbox">
-                <input type="text" id="numero"  required>
-                <label for="numero">Número</label>
-            </div>
-        <!-- </div> -->
-        <!-- <div class="row"> -->
-            <div class="inputbox">
-                <input type="text" id="bairro"  required>
-                <label for="bairro">Bairro</label>
-            </div>
-            <div class="inputbox">
-                <input type="text" id="cidade"  required>
-                <label for="cidade">Cidade</label>
-            </div>
-            <div class="inputbox">
-                <input type="text" id="estado"  required>
-                <label for="estado">Estado</label>
-            </div>
-        </div>
-        <div class="row">
-            <button id="btn">Salvar</button>
-            <button id="btn">Deletar</button>
-        </div>
+        </section>
     </main>
-    <footer>
-        Vanessa Rosa
-    </footer>
+
+    <!-- Importante: type="module" para aceitar os imports do seu contatos.js -->
+    <script type="module" src="app.js"></script>
 </body>
 </html>
