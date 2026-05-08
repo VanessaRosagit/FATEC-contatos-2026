@@ -1,6 +1,6 @@
 import { getContatos, criarContato, atualizarContato, deletarContato } from './contatos.js';
 
-// Seleção de elementos do DOM que já existem no seu HTML
+// Seleção de elementos do DOM que já existem no HTML
 const form = document.querySelector('#contato-form');
 const container = document.querySelector('#contatos-container');
 const inputId = document.querySelector('#contato-id');
