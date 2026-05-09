@@ -83,17 +83,17 @@ Observacao:
 ![Exemplo de Issue](./issue.jpg)
 
 ## Checklist do Aluno
-- [ ] Fiz o fork do repositorio.
-- [ ] Fiz commits a cada funcionalidade (ou pelo menos um para cada aula).
-- [ ] Meu projeto abre sem erros no navegador.
-- [ ] Consigo listar contatos da API.
-- [ ] Consigo cadastrar novo contato.
-- [ ] Consigo atualizar contato da API.
-- [ ] Consigo deletar contato da API.
-- [ ] Minha interface possui formulario e listagem.
-- [ ] Meu codigo esta organizado e legivel.
-- [ ] Nao exclui os arquivos base do repositorio.
-- [ ] Entreguei o link do repositorio.
+- [ok ] Fiz o fork do repositorio.
+- [ok ] Fiz commits a cada funcionalidade (ou pelo menos um para cada aula).
+- [ok ] Meu projeto abre sem erros no navegador.
+- [ok ] Consigo listar contatos da API.
+- [ok ] Consigo cadastrar novo contato.
+- [ok ] Consigo atualizar contato da API.
+- [ok ] Consigo deletar contato da API.
+- [ok ] Minha interface possui formulario e listagem.
+- [ok ] Meu codigo esta organizado e legivel.
+- [ok ] Nao exclui os arquivos base do repositorio.
+- [ok ] Entreguei o link do repositorio.
 
 ---
 
