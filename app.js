@@ -100,6 +100,16 @@ async function removerContato(id) {
         }
     }
 }
+// Função para converter arquivo em String Base64
+const converterParaBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+    });
+};
+
 
 /**
  * Evento de envio do formulário (Salvar/Atualizar)
@@ -107,27 +117,52 @@ async function removerContato(id) {
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const dadosContato = {
-        nome: inputNome.value,
-        email: inputEmail.value,
-        celular: inputCelular.value,
-        foto: inputFoto.value,
-        endereco: inputEndereco.value,
-        cidade: inputCidade.value
-    };
+    // 1. Captura o arquivo do input file
+    const fotoArquivo = document.querySelector('#foto').files[0];
+    let fotoBase64 = "";
 
     try {
+        // 2. Lógica de conversão da imagem
+        if (fotoArquivo) {
+            // Se o usuário selecionou um arquivo novo, converte para Base64
+            fotoBase64 = await converterParaBase64(fotoArquivo);
+        } else if (inputId.value) {
+            // Se for uma edição e não mudou a foto, mantemos a que já existe no card
+            // (Isso evita que a foto suma ao editar outros dados)
+            const cardExistente = document.querySelector(`[data-id="${inputId.value}"] img`);
+            fotoBase64 = cardExistente ? cardExistente.src : 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
+        } else {
+            // Se for cadastro novo sem foto
+            fotoBase64 = 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
+        }
+
+        // 3. Montagem do objeto (CORREÇÃO AQUI: usando fotoBase64)
+        const dadosContato = {
+            nome: inputNome.value,
+            email: inputEmail.value,
+            celular: inputCelular.value,
+            foto: fotoBase64, // Agora o dado enviado é a imagem convertida
+            endereco: inputEndereco.value,
+            cidade: inputCidade.value
+        };
+
+        // 4. Envio para a API
         if (inputId.value) {
             await atualizarContato(inputId.value, dadosContato);
         } else {
             await criarContato(dadosContato);
         }
 
+        // 5. Limpeza e atualização
         form.reset();
-        inputId.value = ''; // Limpa o ID oculto
+        inputId.value = ''; 
         await carregarInterface();
+        
+        alert("Contato salvo com sucesso!");
+
     } catch (error) {
-        alert(error.message);
+        console.error(error);
+        alert("Erro ao salvar: " + error.message);
     }
 });
 

@@ -225,3 +225,16 @@ button:active {
         width: 100%;
     }
 }
+input[type="file"] {
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px dashed #ccc;
+    cursor: pointer;
+}
+
+.custom-file-upload {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
