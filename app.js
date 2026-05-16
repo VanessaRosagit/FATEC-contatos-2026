@@ -1,5 +1,7 @@
 import { getContatos, criarContato, atualizarContato, deletarContato } from './contatos.js';
 
+import { uploadParaCloudinary } from './cloudinary.js';
+
 // Seleção de elementos do DOM que já existem no HTML
 const form = document.querySelector('#contato-form');
 const container = document.querySelector('#contatos-container');
@@ -43,6 +45,9 @@ function criarCardContato(contato) {
     btnExcluir.classList.add('btn-delete');
     btnExcluir.addEventListener('click', () => removerContato(contato.id));
 
+    // Vincula o card ao ID do contato para manter a foto ao editar
+    card.dataset.id = contato.id;
+
     // Montagem da árvore de elementos (DOM)
     card.appendChild(img);
     card.appendChild(nome);
@@ -79,9 +84,9 @@ function preencherFormulario(contato) {
     inputNome.value = contato.nome;
     inputEmail.value = contato.email;
     inputCelular.value = contato.celular;
-    inputFoto.value = contato.foto;
     inputEndereco.value = contato.endereco;
     inputCidade.value = contato.cidade;
+    inputFoto.value = ''; // não é possível preencher um input file por segurança
     
     // O foco volta para o topo para o usuário ver o form preenchido
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -122,13 +127,16 @@ form.addEventListener('submit', async (event) => {
     let fotoBase64 = "";
 
     try {
-        // 2. Lógica de conversão da imagem
         if (fotoArquivo) {
-            // Se o usuário selecionou um arquivo novo, converte para Base64
-            fotoBase64 = await converterParaBase64(fotoArquivo);
+            // Se o usuário selecionou um arquivo novo, envia para o Cloudinary
+            const urlCloudinary = await uploadParaCloudinary(fotoArquivo);
+            if (!urlCloudinary) {
+                throw new Error('Falha ao enviar a imagem para o Cloudinary');
+            }
+            fotoBase64 = urlCloudinary;
         } else if (inputId.value) {
             // Se for uma edição e não mudou a foto, mantemos a que já existe no card
-            // (Isso evita que a foto suma ao editar outros dados)
+            // (isso evita que a foto suma ao editar outros dados)
             const cardExistente = document.querySelector(`[data-id="${inputId.value}"] img`);
             fotoBase64 = cardExistente ? cardExistente.src : 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
         } else {
@@ -136,12 +144,11 @@ form.addEventListener('submit', async (event) => {
             fotoBase64 = 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
         }
 
-        // 3. Montagem do objeto (CORREÇÃO AQUI: usando fotoBase64)
         const dadosContato = {
             nome: inputNome.value,
             email: inputEmail.value,
             celular: inputCelular.value,
-            foto: fotoBase64, // Agora o dado enviado é a imagem convertida
+            foto: fotoBase64,
             endereco: inputEndereco.value,
             cidade: inputCidade.value
         };

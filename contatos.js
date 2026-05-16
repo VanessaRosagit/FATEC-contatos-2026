@@ -1,5 +1,6 @@
 const BASE_URL = "https://bakcend-fecaf-render.onrender.com/contatos"
 
+
 export async function getContatos() {
   const response = await fetch(BASE_URL)
   if (!response.ok) {
