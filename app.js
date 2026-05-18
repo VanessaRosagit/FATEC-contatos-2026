@@ -1,8 +1,81 @@
-import { getContatos, criarContato, atualizarContato, deletarContato } from './contatos.js';
+'use strict'
 
+import { getContatos, criarContato, atualizarContato, deletarContato } from './contatos.js';
 import { uploadParaCloudinary } from './cloudinary.js';
 
-// Seleção de elementos do DOM que já existem no HTML
+
+
+function criarTelaLoginDOM() {
+    // Se o usuário já logou nesta sessão, carrega a agenda direto
+    if (sessionStorage.getItem('usuario_logado') === 'true') {
+        carregarInterface();
+        return;
+    }
+
+    // Seleciona a aplicação original para ocultar temporariamente
+    const mainApp = document.querySelector('main');
+    const headerApp = document.querySelector('header');
+    if (mainApp) mainApp.classList.add('d-none');
+    if (headerApp) headerApp.classList.add('d-none');
+
+    // Cria os elementos do Login usando as classes do CSS separado
+    const loginOverlay = document.createElement('div');
+    loginOverlay.classList.add('login-overlay');
+
+    const loginCard = document.createElement('div');
+    loginCard.classList.add('login-card');
+
+    const titulo = document.createElement('h2');
+    titulo.textContent = 'Acesso à Agenda';
+
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.placeholder = 'E-mail (admin@admin.com)';
+    emailInput.classList.add('login-input');
+    emailInput.required = true;
+
+    const senhaInput = document.createElement('input');
+    senhaInput.type = 'password';
+    senhaInput.placeholder = 'Senha (123456)';
+    senhaInput.classList.add('login-input');
+    senhaInput.style.marginBottom = '24px'; // Ajuste fino de margem para o botão
+    senhaInput.required = true;
+
+    const btnEntrar = document.createElement('button');
+    btnEntrar.type = 'button';
+    btnEntrar.textContent = 'Entrar';
+    btnEntrar.classList.add('btn-login');
+
+    // Validação do acesso
+    btnEntrar.addEventListener('click', () => {
+        if (emailInput.value === 'Vanessa' && senhaInput.value === '123456') {
+            sessionStorage.setItem('usuario_logado', 'true');
+            
+            
+            loginOverlay.remove();
+            
+        
+            if (mainApp) mainApp.classList.remove('d-none');
+            if (headerApp) headerApp.classList.remove('d-none');
+            
+            carregarInterface();
+        } else {
+            alert('Credenciais incorretas!');
+        }
+    });
+
+    // Montagem da estrutura na tela
+    loginCard.appendChild(titulo);
+    loginCard.appendChild(emailInput);
+    loginCard.appendChild(senhaInput);
+    loginCard.appendChild(btnEntrar);
+    loginOverlay.appendChild(loginCard);
+    
+    // Injeta a tela de login antes de tudo no body
+    document.body.prepend(loginOverlay);
+}
+
+
 const form = document.querySelector('#contato-form');
 const container = document.querySelector('#contatos-container');
 const inputId = document.querySelector('#contato-id');
@@ -13,13 +86,9 @@ const inputFoto = document.querySelector('#foto');
 const inputEndereco = document.querySelector('#endereco');
 const inputCidade = document.querySelector('#cidade');
 
-/**
- * Cria os elementos do card um por um, sem usar strings HTML.
- * Isso mantém o JS focado apenas na estrutura de dados.
- */
 function criarCardContato(contato) {
     const card = document.createElement('div');
-    card.classList.add('contato-card'); // A estilização vem toda do CSS
+    card.classList.add('contato-card'); 
 
     const img = document.createElement('img');
     img.src = contato.foto || 'https://via.placeholder.com/150';
@@ -34,8 +103,7 @@ function criarCardContato(contato) {
     const celular = document.createElement('p');
     celular.textContent = contato.celular;
 
-    // Botão de Editar
-   const btnEditar = document.createElement('button');
+    const btnEditar = document.createElement('button');
     btnEditar.textContent = 'Editar';
     btnEditar.classList.add('btn-edit');
     btnEditar.addEventListener('click', () => preencherFormulario(contato));
@@ -44,11 +112,10 @@ function criarCardContato(contato) {
     btnExcluir.textContent = 'Excluir';
     btnExcluir.classList.add('btn-delete');
     btnExcluir.addEventListener('click', () => removerContato(contato.id));
-
-    // Vincula o card ao ID do contato para manter a foto ao editar
+    
+    
     card.dataset.id = contato.id;
 
-    // Montagem da árvore de elementos (DOM)
     card.appendChild(img);
     card.appendChild(nome);
     card.appendChild(email);
@@ -59,13 +126,10 @@ function criarCardContato(contato) {
     return card;
 }
 
-/**
- * Função para listar os contatos na tela
- */
 async function carregarInterface() {
     try {
         const lista = await getContatos();
-        container.replaceChildren(); // Limpa a lista de forma eficiente
+        container.replaceChildren(); 
 
         lista.forEach(contato => {
             const card = criarCardContato(contato);
@@ -76,9 +140,6 @@ async function carregarInterface() {
     }
 }
 
-/**
- * Preenche o formulário para edição
- */
 function preencherFormulario(contato) {
     inputId.value = contato.id;
     inputNome.value = contato.nome;
@@ -86,15 +147,11 @@ function preencherFormulario(contato) {
     inputCelular.value = contato.celular;
     inputEndereco.value = contato.endereco;
     inputCidade.value = contato.cidade;
-    inputFoto.value = ''; // não é possível preencher um input file por segurança
+    inputFoto.value = ''; 
     
-    // O foco volta para o topo para o usuário ver o form preenchido
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/**
- * Remove um contato e atualiza a tela
- */
 async function removerContato(id) {
     if (confirm("Tem certeza que deseja excluir este contato?")) {
         try {
@@ -105,43 +162,25 @@ async function removerContato(id) {
         }
     }
 }
-// Função para converter arquivo em String Base64
-const converterParaBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
-};
 
-
-/**
- * Evento de envio do formulário (Salvar/Atualizar)
- */
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // 1. Captura o arquivo do input file
     const fotoArquivo = document.querySelector('#foto').files[0];
     let fotoBase64 = "";
 
     try {
         if (fotoArquivo) {
-            // Se o usuário selecionou um arquivo novo, envia para o Cloudinary
             const urlCloudinary = await uploadParaCloudinary(fotoArquivo);
             if (!urlCloudinary) {
                 throw new Error('Falha ao enviar a imagem para o Cloudinary');
             }
             fotoBase64 = urlCloudinary;
         } else if (inputId.value) {
-            // Se for uma edição e não mudou a foto, mantemos a que já existe no card
-            // (isso evita que a foto suma ao editar outros dados)
             const cardExistente = document.querySelector(`[data-id="${inputId.value}"] img`);
-            fotoBase64 = cardExistente ? cardExistente.src : 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
+            fotoBase64 = cardExistente ? cardExistente.src : 'https://via.placeholder.com/150';
         } else {
-            // Se for cadastro novo sem foto
-            fotoBase64 = 'https://www.kindpng.com/picc/m/722-7221920_placeholder-profile-image-placeholder-png-transparent-png.png';
+            fotoBase64 = 'https://via.placeholder.com/150';
         }
 
         const dadosContato = {
@@ -153,14 +192,12 @@ form.addEventListener('submit', async (event) => {
             cidade: inputCidade.value
         };
 
-        // 4. Envio para a API
         if (inputId.value) {
             await atualizarContato(inputId.value, dadosContato);
         } else {
             await criarContato(dadosContato);
         }
 
-        // 5. Limpeza e atualização
         form.reset();
         inputId.value = ''; 
         await carregarInterface();
@@ -173,5 +210,5 @@ form.addEventListener('submit', async (event) => {
     }
 });
 
-// Inicialização da página
-carregarInterface();
+// Executa a barreira de login controlada por classes do CSS externo
+criarTelaLoginDOM();

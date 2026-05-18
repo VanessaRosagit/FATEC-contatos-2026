@@ -238,3 +238,76 @@ input[type="file"] {
     font-weight: bold;
     color: var(--primary-color);
 }
+
+
+/* Fundo da tela de login ocupando a tela inteira */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--primary-color); /* Usando o seu vinho original de fundo */
+    background: linear-gradient(135deg, var(--primary-color), #2d0511);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+/* O card central de login */
+.login-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    border-top: 5px solid var(--accent-color); /* Casando com o detalhe do card de contato */
+}
+
+.login-card h2 {
+    margin-bottom: 24px;
+    color: var(--primary-color); /* Vinho no título */
+    font-size: 1.6rem;
+}
+
+/* Inputs de e-mail e senha da tela de login */
+.login-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 2px solid #edf2f7;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.login-input:focus {
+    border-color: var(--accent-color); /* Brilha em rosa ao focar */
+    outline: none;
+}
+
+/* Botão de entrar */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color); /* Vinho no botão */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-login:hover {
+    background-color: #560c21; /* Tom mais escuro igual ao seu outro botão */
+}
+
+.btn-login:active {
+    transform: scale(0.98);
+}
